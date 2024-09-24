@@ -1,0 +1,11 @@
+---
+- name: Initialize Ubuntu Server
+  hosts: ubuntu
+  become: yes
+
+  roles:
+    - role: ../roles/user_and_ssh
+    - role: ../roles/ufw
+    - role: ../roles/alias
+    - role: ../roles/system
+    - role: ../roles/docker

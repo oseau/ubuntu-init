@@ -1,0 +1,35 @@
+---
+- name: Create non-root user
+  user:
+    name: "{{ new_user }}"
+    groups: sudo
+    shell: /bin/bash
+
+- name: Add user to sudoers
+  lineinfile:
+    path: /etc/sudoers
+    line: "{{ new_user }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+
+- name: Copy local SSH public key to root user
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: Copy local SSH public key to new user
+  authorized_key:
+    user: "{{ new_user }}"
+    state: present
+    key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: Disable password-based login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+
+- name: Restart SSH service
+  service:
+    name: ssh
+    state: restarted
