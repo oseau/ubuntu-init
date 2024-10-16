@@ -9,6 +9,12 @@
     rule: allow
     port: 22
 
+- name: Allow Mosh
+  ufw:
+    rule: allow
+    proto: udp
+    port: 60000:61000
+
 - name: Enable UFW
   ufw:
     state: enabled
