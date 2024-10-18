@@ -17,4 +17,10 @@
       - git
       - htop
       - vim
+      - mosh
+      - tmux
     state: present
+
+- name: Set timezone
+  timezone:
+    name: America/New_York
